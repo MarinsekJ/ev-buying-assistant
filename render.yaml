@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: ev-transition-api
+    env: node
+    rootDir: app/backend
+    buildCommand: "npm install && cd ../.. && pip install -r requirements.txt && pip install -e . && python -m ev_transition.train"
+    startCommand: "node server.js"
+    envVars:
+      - key: PYTHONPATH
+        value: ../../src
+      - key: MODEL_DIR
+        value: ../../models
+      - key: FRONTEND_ORIGIN
+        value: "*"
+

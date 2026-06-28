@@ -1,0 +1,23 @@
+{
+  "name": "ev-transition-economics",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Machine learning workflow and buying assistant for EV transition economics.",
+  "scripts": {
+    "install:all": "npm install --prefix app/backend && npm install --prefix app/frontend",
+    "dev": "concurrently \"npm run dev --prefix app/backend\" \"npm run dev --prefix app/frontend\"",
+    "build": "npm run build --prefix app/frontend",
+    "start": "npm run start --prefix app/backend",
+    "test:py": "pytest",
+    "train": "python -m ev_transition.train",
+    "eda": "python -m ev_transition.eda",
+    "workflow": "python -m ev_transition.run_all"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
+

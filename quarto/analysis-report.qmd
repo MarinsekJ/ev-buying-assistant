@@ -1,0 +1,100 @@
+---
+title: "D1 Analysis Report: EV Transition Economics"
+format:
+  html:
+    toc: true
+    code-fold: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{python}
+import sys
+from pathlib import Path
+ROOT = Path.cwd()
+sys.path.insert(0, str(ROOT / "src"))
+
+from ev_transition.run_all import main as run_workflow
+from ev_transition.eda import build_report_assets
+
+run_workflow()
+summary = build_report_assets()
+summary["shape"]
+```
+
+## Business Question
+
+This project estimates two related outcomes for a consumer considering an electric vehicle:
+
+1. Whether the switch is contextually practical.
+2. Expected annual savings, shown as `<S_annual>`.
+
+The purpose is not to tell every household to buy an EV. The purpose is to make the tradeoff legible: fuel prices, electricity rates, charging access, commute length, incentives, and vehicle price premiums can move the answer in different directions.
+
+## Data Acquisition and Quirks
+
+The workflow first attempts to download the Kaggle dataset configured by `KAGGLE_DATASET_SLUG` using the Kaggle API. If credentials or the exact dataset slug are unavailable, it creates a deterministic synthetic fallback with the same business schema. This fallback exists so the report, model training, and app can run end-to-end from a clean checkout without exposing API keys.
+
+```{python}
+summary["dtypes"]
+```
+
+The modeling table contains state, commute mileage, fuel cost, electricity cost, EV efficiency, fuel vehicle efficiency, charging density, incentive eligibility, vehicle prices, and ownership adjustments. Missing values are handled inside the modeling pipelines with median imputation for numeric features and most-frequent imputation for categorical features.
+
+## Target Construction
+
+`Practicality_Rating` is derived structurally, not hand-labeled. The rule compares local charging density against daily range need and checks whether the buyer has either home charging or incentive support.
+
+`Annual_Savings` is built from operating cost savings, maintenance savings, insurance change, and an annualized six-year net EV price premium after incentives.
+
+## Exploratory Data Analysis
+
+```{python}
+from IPython.display import Image, display
+for file in [
+    "reports/figures/target_distributions.png",
+    "reports/figures/feature_target_correlations.png",
+    "reports/figures/infrastructure_vs_savings.png",
+]:
+    display(Image(filename=file))
+```
+
+The most decision-relevant patterns are:
+
+- Higher gasoline prices increase EV savings because they raise the avoided cost of combustion driving.
+- Higher utility rates reduce savings because they increase EV operating cost.
+- Charging density and commute length matter most for practicality, not for pure dollar savings.
+- Incentives can make annualized economics positive even when the EV purchase price is higher.
+
+## Leakage Prevention
+
+All learned preprocessing is fitted inside scikit-learn `Pipeline` and `ColumnTransformer` objects after splitting the data. Median imputers, categorical encoders, scalers, feature selectors, and model parameters are learned only from the training folds. The binary target and numeric savings target are deterministic formulas from row-level consumer context, so they are derived before splitting without using aggregate information.
+
+## Modeling Ladder
+
+Both tasks use the same honest ladder:
+
+- Dummy baseline, kept visible.
+- Linear model.
+- Unrestricted decision tree, included to expose overfitting.
+- XGBoost with cross-validation and grid search when `xgboost` is installed.
+
+```{python}
+import pandas as pd
+pd.read_csv("models/classification_leaderboard.csv")
+```
+
+```{python}
+pd.read_csv("models/regression_leaderboard.csv")
+```
+
+Decision trees usually show the highest train score and a weaker validation score. That is the clearest overfitting warning in this workflow. The final recommendation should therefore focus on stable directional drivers rather than claiming exact consumer-level precision.
+
+## Business Interpretation
+
+The practical decision is a two-part filter. First, does the household have enough charging support for the commute? Second, do electricity prices and incentives leave enough operating-cost advantage to offset the EV price premium?
+
+For everyday consumers, the model output should be treated as a planning estimate. A positive `<S_annual>` means the operating and incentive economics are favorable under the entered assumptions. A low practicality score or infrastructure warning means the buyer should verify home charging, workplace charging, or nearby fast-charging options before treating the savings projection as actionable.
+

@@ -1,0 +1,36 @@
+---
+title: "D4 EV Transition Economics"
+format: revealjs
+---
+
+## The Question
+
+Should a consumer switch to an EV?
+
+We answer with two simple outputs:
+
+- Is the switch practical for the commute and local charging context?
+- What is the expected annual savings, `<S_annual>`?
+
+## What Drives the Answer
+
+Fuel prices, electricity rates, commute length, incentives, charging density, and the EV price premium matter more than broad EV averages.
+
+The same vehicle can be a strong financial choice in one state and a marginal choice in another.
+
+## Modeling Approach
+
+We built separate classification and regression workflows.
+
+The ladder keeps a baseline visible, then compares linear models, decision trees, and tuned XGBoost.
+
+All preprocessing is fitted inside the training split to prevent leakage.
+
+## Recommendation
+
+Use the app as a buying assistant, not a guarantee.
+
+Buyers with high commute mileage, high gas prices, moderate utility rates, incentives, and charging access tend to see the best case.
+
+When infrastructure density is low, verify charging before relying on the savings estimate.
+
