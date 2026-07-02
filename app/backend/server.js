@@ -9,10 +9,12 @@ import helmet from 'helmet';
 import { z } from 'zod';
 
 const app = express();
-const port = Number(process.env.PORT ?? 3000);
-const frontendOrigins = (process.env.FRONTEND_ORIGIN ?? 'http://localhost:5173,http://127.0.0.1:5173')
+// POPRAVLJENO: Brez Number(), da lahko Passenger podtakne svojo pot do socketa
+const port = process.env.PORT || 3000;
+const defaultFrontendOrigins = 'http://localhost:5173,http://127.0.0.1:5173,https://dev.jakamarinsek.com';
+const frontendOrigins = (process.env.FRONTEND_ORIGIN ?? defaultFrontendOrigins)
   .split(',')
-  .map(origin => origin.trim())
+  .map(normalizeAllowedOrigin)
   .filter(Boolean);
 const serverDir = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = process.env.PROJECT_ROOT ?? path.resolve(serverDir, '../..');
@@ -20,6 +22,17 @@ const predictionTimeoutMs = Number(process.env.PREDICTION_TIMEOUT_MS ?? 30000);
 let worker = null;
 let nextRequestId = 1;
 const pending = new Map();
+
+function normalizeAllowedOrigin(origin) {
+  const trimmed = origin.trim();
+  if (!trimmed || trimmed === '*') return trimmed;
+
+  try {
+    return new URL(trimmed).origin;
+  } catch {
+    return trimmed.replace(/\/+$/, '');
+  }
+}
 
 const requestSchema = z.object({
   Weekly_Commute_Miles: z.coerce.number().min(1).max(900),
@@ -39,6 +52,10 @@ app.use(cors({
   }
 }));
 app.use(express.json({ limit: '16kb' }));
+
+app.get('/', (_req, res) => {
+  res.send('EV Assist Backend is running successfully!');
+});
 
 app.get('/health', (_req, res) => {
   res.json({ ok: true, service: 'ev-transition-api' });

@@ -1,0 +1,28 @@
+{
+  "classification": {
+    "model": "DecisionTree",
+    "split": "test",
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "roc_auc": 1.0,
+    "confusion_matrix": [
+      [
+        95,
+        0
+      ],
+      [
+        0,
+        280
+      ]
+    ]
+  },
+  "regression": {
+    "model": "DecisionTree",
+    "split": "test",
+    "r2": 0.8562029498975429,
+    "mae": 383.7325333333334,
+    "rmse": 517.5120301632932
+  }
+}

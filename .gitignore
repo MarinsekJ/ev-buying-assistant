@@ -1,22 +1,65 @@
+```gitignore
+# Python virtual environments and cache
 .venv/
+venv/
 __pycache__/
+*.py[cod]
 .pytest_cache/
+
+# Quarto
 .quarto/
+
+# Node.js
 node_modules/
+
+# Frontend production build
 dist/
+app/frontend/dist/
+
+# Environment variables
 .env
 .env.*
 !.env.example
+
+# Dovolimo produkcijsko Vite konfiguracijo
+!app/frontend/.env.production
+
+# Raw and processed data
 data/raw/*
 !data/raw/.gitkeep
+
 data/processed/*
 !data/processed/.gitkeep
-models/*
-!models/.gitkeep
+
+# Model files are intentionally included for Render deployment
+# Do not ignore the models/ directory or *.joblib files
+
+# Generated report figures
 reports/figures/*
 !reports/figures/.gitkeep
+
+# Generated HTML files
 *.html
+
+# Frontend entry file must remain tracked
 !app/frontend/index.html
-*.joblib
+
+# Archives
 *.zip
+
+# Error logs
 *.err.log
+
+# General log files
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+```

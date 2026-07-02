@@ -78,17 +78,8 @@ docker compose up --build
 
 ## Deployment
 
-Frontend deployment target: Vercel or Netlify from `app/frontend`.
+Frontend deployment target: static hosting at `https://dev.jakamarinsek.com/ev-assist/`.
 
-Backend deployment target: Render or Railway from `app/backend`.
+Backend deployment target: Render Docker web service from the repository root.
 
-Set these environment variables in the backend host:
-
-- `PYTHONPATH=./src`
-- `MODEL_DIR=./models`
-- `FRONTEND_ORIGIN=<deployed frontend URL>`
-- `KAGGLE_USERNAME` and `KAGGLE_KEY` only if downloading the Kaggle dataset during deployment
-
-Live app URL: pending deployment credentials.  
-Live API URL: pending deployment credentials.
-
+See `docs/render-backend-deploy.md` for the Render deployment steps and frontend build variables.
