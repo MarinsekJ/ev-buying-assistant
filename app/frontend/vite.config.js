@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  server: {
+  /*   server: {
     port: 5173
-  }
+  } */
+  base: process.env.VITE_BASE_PATH ?? '/ev-assist/',
 });
-
