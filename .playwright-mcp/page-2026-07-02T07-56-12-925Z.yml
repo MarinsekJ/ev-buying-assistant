@@ -1,0 +1,38 @@
+- main [ref=f1e3]:
+  - generic [ref=f1e4]:
+    - generic [ref=f1e5]:
+      - generic [ref=f1e6]:
+        - img [ref=f1e7]
+        - text: EV Transition Economics
+      - heading "Buying Assistant" [level=1] [ref=f1e10]
+      - paragraph [ref=f1e11]: Estimate whether an EV switch is practical for your commute and what it could save each year.
+    - generic [ref=f1e12]:
+      - generic [ref=f1e13]:
+        - generic [ref=f1e14]:
+          - img [ref=f1e15]
+          - text: Weekly commute mileage
+        - spinbutton "Weekly commute mileage" [ref=f1e17]: "160"
+      - generic [ref=f1e18]:
+        - generic [ref=f1e19]:
+          - img [ref=f1e20]
+          - text: State
+        - combobox "State" [ref=f1e23]:
+          - option "CA" [selected]
+          - option "TX"
+          - option "NY"
+          - option "FL"
+          - option "IL"
+          - option "CO"
+          - option "WA"
+          - option "AZ"
+          - option "GA"
+          - option "MA"
+      - generic [ref=f1e24]:
+        - generic [ref=f1e25]:
+          - img [ref=f1e26]
+          - text: Utility rate ($/kWh)
+        - spinbutton "Utility rate ($/kWh)" [ref=f1e29]: "0.18"
+      - button "Calculate" [ref=f1e30] [cursor=pointer]
+    - generic [ref=f1e32]:
+      - strong [ref=f1e33]: 8,320 annual miles
+      - generic [ref=f1e34]: Run the assistant to get a model-backed estimate.

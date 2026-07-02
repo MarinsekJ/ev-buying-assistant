@@ -1,0 +1,92 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e7]:
+            - img [ref=e8]
+            - text: EV analytics
+          - heading "Insights Dashboard" [level=1] [ref=e10]
+          - paragraph [ref=e11]: 27,040 annual miles in WA, with model savings of $1,741 and a challenging rating.
+        - button "Close & Return" [ref=e12] [cursor=pointer]:
+          - img [ref=e13]
+          - text: Close & Return
+      - region "Stored model summary" [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]: Annual savings
+          - strong [ref=e19]: $1,741
+        - generic [ref=e20]:
+          - generic [ref=e21]: Practicality
+          - strong [ref=e22]: Challenging
+        - generic [ref=e23]:
+          - generic [ref=e24]: Break-even
+          - strong [ref=e25]: 4.3 years
+      - generic [ref=e26]:
+        - article [ref=e27]:
+          - generic [ref=e28]:
+            - generic [ref=e29]:
+              - img [ref=e30]
+              - text: 10-year horizon
+            - heading "Cumulative financial trajectory" [level=2] [ref=e33]
+          - paragraph [ref=e34]: Projects your model-estimated annual savings forward for 10 years with a modest yearly growth assumption. The gold marker shows when cumulative savings would offset an estimated $7,500 EV purchase premium.
+          - application [ref=e38]:
+            - generic [ref=e65]:
+              - generic [ref=e66]:
+                - generic [ref=e68]: "1"
+                - generic [ref=e70]: "4"
+                - generic [ref=e72]: "7"
+                - generic [ref=e74]: "10"
+              - generic [ref=e75]:
+                - generic [ref=e77]: $0k
+                - generic [ref=e79]: $5k
+                - generic [ref=e81]: $10k
+                - generic [ref=e83]: $15k
+                - generic [ref=e85]: $20k
+              - generic [ref=e86]: Break-even 4.3y
+        - article [ref=e87]:
+          - generic [ref=e88]:
+            - generic [ref=e89]:
+              - img [ref=e90]
+              - text: Charging optimizer
+            - heading "Infrastructure cost scenarios" [level=2] [ref=e92]
+          - paragraph [ref=e93]: Compares annual electricity cost for your 27,040 miles across home, mixed, and public fast charging. Home charging uses your $0.28/kWh utility rate; public fast charging is modeled as a higher-cost scenario.
+          - application [ref=e97]:
+            - generic [ref=e105]:
+              - generic [ref=e106]:
+                - generic [ref=e108]: Home
+                - generic [ref=e110]: Mixed
+                - generic [ref=e112]: Public
+              - generic [ref=e113]:
+                - generic [ref=e115]: $0
+                - generic [ref=e117]: $1500
+                - generic [ref=e119]: $3000
+                - generic [ref=e121]: $4500
+                - generic [ref=e123]: $6000
+        - article [ref=e124]:
+          - generic [ref=e125]:
+            - generic [ref=e126]:
+              - img [ref=e127]
+              - text: Decarbonization
+            - heading "Environmental payback" [level=2] [ref=e130]
+          - paragraph [ref=e131]: Estimates cumulative life-cycle CO2 for a conventional vehicle versus an EV using your annual mileage and WA grid intensity. The EV line includes an upfront manufacturing emissions debt.
+          - application [ref=e135]:
+            - generic [ref=e159]:
+              - generic [ref=e160]:
+                - generic [ref=e162]: "1"
+                - generic [ref=e164]: "2"
+                - generic [ref=e166]: "3"
+                - generic [ref=e168]: "4"
+                - generic [ref=e170]: "5"
+                - generic [ref=e172]: "6"
+                - generic [ref=e174]: "7"
+                - generic [ref=e176]: "8"
+                - generic [ref=e178]: "9"
+                - generic [ref=e180]: "10"
+              - generic [ref=e181]:
+                - generic [ref=e183]: 0t
+                - generic [ref=e185]: 30t
+                - generic [ref=e187]: 60t
+                - generic [ref=e189]: 90t
+                - generic [ref=e191]: 120t
+          - paragraph [ref=e192]: "Grid intensity: 0.09 kg CO2/kWh. Carbon payback: 0.6 years."
+  - generic [ref=e193]: 0t

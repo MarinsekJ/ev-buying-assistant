@@ -1,0 +1,4 @@
+
+> ev-transition-economics@1.0.0 dev
+> concurrently "npm run dev --prefix app/backend" "npm run dev --prefix app/frontend"
+

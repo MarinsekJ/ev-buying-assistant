@@ -1,0 +1,92 @@
+[
+  {
+    "Manufacturer Brand": "Chevrolet",
+    "Model Name": "Bolt EUV LT",
+    "Base MSRP price": 28195,
+    "Real-world battery range in kilometers": 365,
+    "Efficiency Index in kilowatt-hours per 100 kilometers": 17.4,
+    "Manufacturer Battery Warranty in years": 8,
+    "Maximum DC Fast Charging speed in kilowatts": 55
+  },
+  {
+    "Manufacturer Brand": "Nissan",
+    "Model Name": "Leaf S+",
+    "Base MSRP price": 29990,
+    "Real-world battery range in kilometers": 445,
+    "Efficiency Index in kilowatt-hours per 100 kilometers": 17.3,
+    "Manufacturer Battery Warranty in years": 8,
+    "Maximum DC Fast Charging speed in kilowatts": 150
+  },
+  {
+    "Manufacturer Brand": "Hyundai",
+    "Model Name": "Kona Electric SE",
+    "Base MSRP price": 32675,
+    "Real-world battery range in kilometers": 386,
+    "Efficiency Index in kilowatt-hours per 100 kilometers": 16.9,
+    "Manufacturer Battery Warranty in years": 10,
+    "Maximum DC Fast Charging speed in kilowatts": 100
+  },
+  {
+    "Manufacturer Brand": "Volkswagen",
+    "Model Name": "ID.4 Pro",
+    "Base MSRP price": 39735,
+    "Real-world battery range in kilometers": 430,
+    "Efficiency Index in kilowatt-hours per 100 kilometers": 18.6,
+    "Manufacturer Battery Warranty in years": 8,
+    "Maximum DC Fast Charging speed in kilowatts": 175
+  },
+  {
+    "Manufacturer Brand": "Ford",
+    "Model Name": "Mustang Mach-E Select",
+    "Base MSRP price": 39995,
+    "Real-world battery range in kilometers": 402,
+    "Efficiency Index in kilowatt-hours per 100 kilometers": 19.5,
+    "Manufacturer Battery Warranty in years": 8,
+    "Maximum DC Fast Charging speed in kilowatts": 150
+  },
+  {
+    "Manufacturer Brand": "Tesla",
+    "Model Name": "Model 3 Long Range RWD",
+    "Base MSRP price": 42490,
+    "Real-world battery range in kilometers": 520,
+    "Efficiency Index in kilowatt-hours per 100 kilometers": 15.2,
+    "Manufacturer Battery Warranty in years": 8,
+    "Maximum DC Fast Charging speed in kilowatts": 250
+  },
+  {
+    "Manufacturer Brand": "Hyundai",
+    "Model Name": "IONIQ 5 SE RWD",
+    "Base MSRP price": 43000,
+    "Real-world battery range in kilometers": 438,
+    "Efficiency Index in kilowatt-hours per 100 kilometers": 18.2,
+    "Manufacturer Battery Warranty in years": 10,
+    "Maximum DC Fast Charging speed in kilowatts": 235
+  },
+  {
+    "Manufacturer Brand": "Kia",
+    "Model Name": "EV6 Light Long Range RWD",
+    "Base MSRP price": 42900,
+    "Real-world battery range in kilometers": 455,
+    "Efficiency Index in kilowatt-hours per 100 kilometers": 17.8,
+    "Manufacturer Battery Warranty in years": 10,
+    "Maximum DC Fast Charging speed in kilowatts": 240
+  },
+  {
+    "Manufacturer Brand": "Tesla",
+    "Model Name": "Model Y Long Range RWD",
+    "Base MSRP price": 44990,
+    "Real-world battery range in kilometers": 515,
+    "Efficiency Index in kilowatt-hours per 100 kilometers": 16.8,
+    "Manufacturer Battery Warranty in years": 8,
+    "Maximum DC Fast Charging speed in kilowatts": 250
+  },
+  {
+    "Manufacturer Brand": "BMW",
+    "Model Name": "i4 eDrive40",
+    "Base MSRP price": 57900,
+    "Real-world battery range in kilometers": 475,
+    "Efficiency Index in kilowatt-hours per 100 kilometers": 18.0,
+    "Manufacturer Battery Warranty in years": 8,
+    "Maximum DC Fast Charging speed in kilowatts": 205
+  }
+]

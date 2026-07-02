@@ -4,62 +4,80 @@ import argparse
 import json
 import os
 from pathlib import Path
+from typing import Any, Mapping
 
 import joblib
 import pandas as pd
 
-from .config import MODEL_DIR, STATE_DEFAULTS
+from .config import MODEL_DIR
 from .features import derive_targets, normalize_schema
 
 
-def build_input(weekly_commute_miles: float, state: str, utility_rate: float) -> pd.DataFrame:
-    code = state.upper()
-    defaults = STATE_DEFAULTS.get(code, {"gas": 3.65, "utility": utility_rate, "density": 14, "subsidy": 0})
-    row = {
-        "State": code,
-        "Weekly_Commute_Miles": weekly_commute_miles,
-        "Annual_Miles": weekly_commute_miles * 52,
-        "Gas_Price_Per_Gallon": defaults["gas"],
-        "Fuel_Efficiency_MPG": 29.0,
-        "EV_Efficiency_kWh_per_Mile": 0.31,
-        "Utility_Rate_per_kWh": utility_rate,
-        "Charging_Density_per_100k": defaults["density"],
-        "Local_Charging_Stations": defaults["density"] * 4,
-        "Population_Density": 250.0,
-        "State_EV_Subsidy": defaults["subsidy"],
-        "Federal_Tax_Credit_Eligible": 1,
-        "Home_Charging_Access": 1,
-        "Vehicle_Price_EV": 41000.0,
-        "Vehicle_Price_Gas": 33500.0,
-        "Maintenance_Savings_Annual": 520.0,
-        "Insurance_Delta_Annual": 120.0,
-    }
-    return normalize_schema(pd.DataFrame([row]))
+def build_input(raw_payload: Mapping[str, Any]) -> pd.DataFrame:
+    return pd.DataFrame([dict(raw_payload)])
 
 
-def predict(weekly_commute_miles: float, state: str, utility_rate: float) -> dict[str, object]:
+def load_pipeline():
     model_dir = Path(os.getenv("MODEL_DIR", MODEL_DIR))
     artifact_path = model_dir / "ev_transition_artifact.joblib"
     if not artifact_path.exists():
         raise FileNotFoundError(f"Missing model artifact at {artifact_path}. Run `python -m ev_transition.train`.")
+
     artifact = joblib.load(artifact_path)
-    X = build_input(weekly_commute_miles, state, utility_rate)
-    savings = float(artifact["regressor"].predict(X)[0])
-    practical_proba = float(artifact["classifier"].predict_proba(X)[0][1])
-    density = float(X["Charging_Density_per_100k"].iloc[0])
+    if hasattr(artifact, "predict") and hasattr(artifact, "predict_proba"):
+        return artifact
+
+    # Backward compatibility for artifacts created before the single-asset wrapper.
+    if isinstance(artifact, dict) and {"classifier", "regressor"}.issubset(artifact):
+        from .model import EVTransitionPipeline
+
+        return EVTransitionPipeline(
+            classifier=artifact["classifier"],
+            regressor=artifact["regressor"],
+            class_model=artifact.get("class_model", "unknown-classifier"),
+            reg_model=artifact.get("reg_model", "unknown-regressor"),
+            feature_columns=artifact.get("feature_columns", []),
+            random_state=artifact.get("random_state", 42),
+        )
+
+    raise TypeError(f"Unsupported model artifact format at {artifact_path}.")
+
+
+def predict_from_payload(raw_payload: Mapping[str, Any]) -> dict[str, object]:
+    pipeline = load_pipeline()
+    X = build_input(raw_payload)
+    normalized = pipeline.prepare_input(X) if hasattr(pipeline, "prepare_input") else normalize_schema(X)
+    prediction = pipeline.predict(X)
+    savings = float(prediction["Annual_Savings"].iloc[0])
+    practical_proba = float(pipeline.predict_proba(X)[0][1])
+    weekly_commute_miles = float(normalized["Weekly_Commute_Miles"].iloc[0])
+    density = float(normalized["Charging_Density_per_100k"].iloc[0])
     daily_need = weekly_commute_miles / 5 * 1.25
     warning = density < max(10, daily_need / 3)
-    rule_targets = derive_targets(X)
+    rule_targets = derive_targets(normalized)
+    model_versions = getattr(pipeline, "model_versions", {"classifier": "unknown", "regressor": "unknown"})
     return {
+        "state": str(normalized["State"].iloc[0]),
         "annual_savings": round(savings, 2),
-        "formatted_annual_savings": f"<S_annual> ${savings:,.0f}",
+        "formatted_annual_savings": f"${savings:,.0f}",
         "practicality_probability": round(practical_proba, 3),
         "practicality_rating": "Practical" if practical_proba >= 0.5 else "Challenging",
         "infrastructure_warning": warning,
         "infrastructure_density_per_100k": density,
+        "gas_price_per_gallon": float(normalized["Gas_Price_Per_Gallon"].iloc[0]),
         "rule_based_annual_savings": float(rule_targets["Annual_Savings"].iloc[0]),
-        "model_versions": {"classifier": artifact["class_model"], "regressor": artifact["reg_model"]},
+        "model_versions": model_versions,
     }
+
+
+def predict(weekly_commute_miles: float, state: str, utility_rate: float) -> dict[str, object]:
+    return predict_from_payload(
+        {
+            "Weekly_Commute_Miles": weekly_commute_miles,
+            "State": state,
+            "Utility_Rate_per_kWh": utility_rate,
+        }
+    )
 
 
 def main() -> None:
@@ -73,4 +91,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

@@ -1,0 +1,14 @@
+
+> ev-transition-api@1.0.0 dev
+> node --watch server.js
+
+EV transition API listeningRestartinRestarting 'seEV transiFailed running 'server.js'
+Restarting 'server.js'
+Restarting 'server.js'
+Restarting 'server.js'
+Failed running 'server.js'
+ on 3000
+Restarting 'server.js'
+EV transition API listening on 3000
+Restarting 'server.js'
+EV transition API listening on 3000

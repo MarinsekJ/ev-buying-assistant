@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
 
-from .config import CLASS_TARGET, REG_TARGET
+from .config import CLASS_TARGET, REG_TARGET, STATE_DEFAULTS
 
 
 ALIASES = {
@@ -20,26 +20,59 @@ ALIASES = {
 }
 
 
-def normalize_schema(df: pd.DataFrame) -> pd.DataFrame:
+STATE_DEFAULT_COLUMNS = {
+    "Gas_Price_Per_Gallon": ("gas", 3.65),
+    "Utility_Rate_per_kWh": ("utility", 0.17),
+    "Charging_Density_per_100k": ("density", 18.0),
+    "State_EV_Subsidy": ("subsidy", 0.0),
+}
+
+ENGINEERED_FEATURES = [
+    "Daily_Range_Need",
+    "Operating_Cost_Gas_per_Mile",
+    "Operating_Cost_EV_per_Mile",
+    "Infrastructure_Ratio",
+    "Total_Incentive",
+    "EV_Price_Premium",
+]
+
+
+def normalize_column_names(df: pd.DataFrame) -> pd.DataFrame:
     renamed = {}
     for column in df.columns:
         key = column.strip().lower().replace(" ", "_")
         renamed[column] = ALIASES.get(key, column.strip().replace(" ", "_"))
-    out = df.rename(columns=renamed).copy()
+    return df.rename(columns=renamed).copy()
+
+
+def _state_default_series(out: pd.DataFrame, key: str, fallback: float) -> pd.Series:
+    states = out.get("State", pd.Series(["US"] * len(out), index=out.index)).astype(str).str.upper()
+    return states.map(lambda code: STATE_DEFAULTS.get(code, {}).get(key, fallback)).astype(float)
+
+
+def normalize_schema(df: pd.DataFrame) -> pd.DataFrame:
+    out = normalize_column_names(df)
+    if "State" in out:
+        out["State"] = out["State"].astype(str).str.strip().str.upper()
     if "Weekly_Commute_Miles" not in out and "Daily_Commute_Miles" in out:
         out["Weekly_Commute_Miles"] = out["Daily_Commute_Miles"] * 5
     if "Annual_Miles" not in out:
         out["Annual_Miles"] = out.get("Weekly_Commute_Miles", 150) * 52
+    for column, (state_key, fallback) in STATE_DEFAULT_COLUMNS.items():
+        state_values = _state_default_series(out, state_key, fallback)
+        if column in out:
+            out[column] = pd.to_numeric(out[column], errors="coerce").fillna(state_values)
+        else:
+            out[column] = state_values
+    if "Local_Charging_Stations" not in out:
+        out["Local_Charging_Stations"] = pd.to_numeric(
+            out["Charging_Density_per_100k"], errors="coerce"
+        ).fillna(18.0) * 4
     defaults = {
         "State": "US",
-        "Gas_Price_Per_Gallon": 3.65,
         "Fuel_Efficiency_MPG": 29.0,
         "EV_Efficiency_kWh_per_Mile": 0.31,
-        "Utility_Rate_per_kWh": 0.17,
-        "Charging_Density_per_100k": 18.0,
-        "Local_Charging_Stations": 40.0,
         "Population_Density": 250.0,
-        "State_EV_Subsidy": 0.0,
         "Federal_Tax_Credit_Eligible": 1,
         "Home_Charging_Access": 1,
         "Vehicle_Price_EV": 41000.0,
@@ -51,6 +84,15 @@ def normalize_schema(df: pd.DataFrame) -> pd.DataFrame:
         if column not in out:
             out[column] = value
     return out
+
+
+def feature_columns_after_domain_engineering(X: pd.DataFrame) -> list[str]:
+    """Return the post-feature-engineering schema without fitting a transformer."""
+    out = normalize_schema(pd.DataFrame(X).head(0).copy())
+    for column in ENGINEERED_FEATURES:
+        if column not in out:
+            out[column] = pd.Series(dtype="float64")
+    return out.columns.tolist()
 
 
 def derive_targets(df: pd.DataFrame) -> pd.DataFrame:

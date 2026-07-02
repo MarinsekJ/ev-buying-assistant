@@ -31,7 +31,8 @@ from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 
 from .config import CLASS_TARGET, FIGURE_DIR, MODEL_DIR, RANDOM_STATE, REG_TARGET
 from .data import load_dataset
-from .features import DomainFeatureEngineer, OutlierCapper
+from .features import DomainFeatureEngineer, OutlierCapper, feature_columns_after_domain_engineering
+from .model import EVTransitionPipeline
 
 try:
     from xgboost import XGBClassifier, XGBRegressor
@@ -67,8 +68,9 @@ def split_data(df: pd.DataFrame):
 
 
 def make_preprocessor(X: pd.DataFrame) -> ColumnTransformer:
-    numeric_features = X.select_dtypes(include=["number", "bool"]).columns.tolist()
-    categorical_features = [c for c in X.columns if c not in numeric_features]
+    feature_columns = feature_columns_after_domain_engineering(X)
+    categorical_features = [c for c in feature_columns if c == "State"]
+    numeric_features = [c for c in feature_columns if c not in categorical_features]
     numeric_pipe = Pipeline(
         [
             ("imputer", SimpleImputer(strategy="median")),
@@ -90,12 +92,16 @@ def make_preprocessor(X: pd.DataFrame) -> ColumnTransformer:
     )
 
 
-def class_models(preprocessor: ColumnTransformer) -> dict[str, object]:
+def class_models(preprocessor: ColumnTransformer, y_train: pd.Series) -> dict[str, object]:
+    positive = max(int((y_train == 1).sum()), 1)
+    negative = max(int((y_train == 0).sum()), 1)
+    scale_pos_weight = negative / positive
     selector = SelectFromModel(
         LogisticRegression(
             penalty="l1",
             solver="liblinear",
             C=0.2,
+            class_weight="balanced",
             random_state=RANDOM_STATE,
             max_iter=1500,
         )
@@ -115,7 +121,7 @@ def class_models(preprocessor: ColumnTransformer) -> dict[str, object]:
                 ("cap_outliers", OutlierCapper()),
                 ("prep", clone(preprocessor)),
                 ("select", selector),
-                ("model", LogisticRegression(max_iter=1500, random_state=RANDOM_STATE)),
+                ("model", LogisticRegression(max_iter=1500, class_weight="balanced", random_state=RANDOM_STATE)),
             ]
         ),
         "DecisionTree": Pipeline(
@@ -133,7 +139,15 @@ def class_models(preprocessor: ColumnTransformer) -> dict[str, object]:
                 ("features", DomainFeatureEngineer()),
                 ("cap_outliers", OutlierCapper()),
                 ("prep", clone(preprocessor)),
-                ("model", XGBClassifier(eval_metric="logloss", random_state=RANDOM_STATE, n_jobs=1)),
+                (
+                    "model",
+                    XGBClassifier(
+                        eval_metric="logloss",
+                        scale_pos_weight=scale_pos_weight,
+                        random_state=RANDOM_STATE,
+                        n_jobs=1,
+                    ),
+                ),
             ]
         )
         models["XGBoostCV"] = GridSearchCV(
@@ -234,11 +248,11 @@ def fit_and_evaluate() -> dict[str, object]:
     df = load_dataset()
     splits = split_data(df)
     X_train, X_val, X_test, yc_train, yc_val, yc_test, yr_train, yr_val, yr_test = splits
-    preprocessor = make_preprocessor(DomainFeatureEngineer().fit_transform(X_train))
+    preprocessor = make_preprocessor(X_train)
 
     class_results = []
     fitted_class = {}
-    for name, model in class_models(preprocessor).items():
+    for name, model in class_models(preprocessor, yc_train).items():
         model.fit(X_train, yc_train)
         fitted_class[name] = model.best_estimator_ if hasattr(model, "best_estimator_") else model
         row = {"model": name, "split": "validation", **evaluate_classifier(fitted_class[name], X_val, yc_val)}
@@ -264,15 +278,15 @@ def fit_and_evaluate() -> dict[str, object]:
 
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
     FIGURE_DIR.mkdir(parents=True, exist_ok=True)
-    artifact = {
-        "classifier": best_class,
-        "regressor": best_reg,
-        "feature_columns": X_train.columns.tolist(),
-        "class_model": best_class_name,
-        "reg_model": best_reg_name,
-        "random_state": RANDOM_STATE,
-    }
-    joblib.dump(artifact, MODEL_DIR / "ev_transition_artifact.joblib")
+    pipeline = EVTransitionPipeline(
+        classifier=best_class,
+        regressor=best_reg,
+        feature_columns=X_train.columns.tolist(),
+        class_model=best_class_name,
+        reg_model=best_reg_name,
+        random_state=RANDOM_STATE,
+    )
+    joblib.dump(pipeline, MODEL_DIR / "ev_transition_artifact.joblib")
 
     leaderboard_class = pd.DataFrame(class_results + [test_class])
     leaderboard_reg = pd.DataFrame(reg_results + [test_reg])

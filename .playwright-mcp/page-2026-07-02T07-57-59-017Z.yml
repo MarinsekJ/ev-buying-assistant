@@ -1,0 +1,95 @@
+- generic [active] [ref=f2e1]:
+  - main [ref=f2e3]:
+    - generic [ref=f2e4]:
+      - generic [ref=f2e5]:
+        - generic [ref=f2e6]:
+          - generic [ref=f2e7]:
+            - img [ref=f2e8]
+            - text: EV analytics
+          - heading "Insights Dashboard" [level=1] [ref=f2e10]
+          - paragraph [ref=f2e11]: Tesla Model 3 Long Range RWD against 8,320 annual miles in CA, with model savings of $1,736 and a practical rating.
+        - button "Close & Return" [ref=f2e12] [cursor=pointer]:
+          - img [ref=f2e13]
+          - text: Close & Return
+      - region "Stored model summary" [ref=f2e16]:
+        - generic [ref=f2e17]:
+          - generic [ref=f2e18]: Annual savings
+          - strong [ref=f2e19]: $1,736
+        - generic [ref=f2e20]:
+          - generic [ref=f2e21]: Practicality
+          - strong [ref=f2e22]: Practical
+        - generic [ref=f2e23]:
+          - generic [ref=f2e24]: Purchase gap break-even
+          - strong [ref=f2e25]: 5.2 years
+        - generic [ref=f2e26]:
+          - generic [ref=f2e27]: Vehicle MSRP
+          - strong [ref=f2e28]: $42,490
+      - generic [ref=f2e29]:
+        - article [ref=f2e30]:
+          - generic [ref=f2e31]:
+            - generic [ref=f2e32]:
+              - img [ref=f2e33]
+              - text: 10-year horizon
+            - heading "Cumulative financial trajectory" [level=2] [ref=f2e36]
+          - paragraph [ref=f2e37]: Projects your model-estimated annual savings forward for 10 years for Tesla Model 3 Long Range RWD. The gold marker shows when cumulative savings would offset the estimated $8,990 price gap versus a comparable gas vehicle.
+          - application [ref=f2e41]:
+            - generic [ref=f2e68]:
+              - generic [ref=f2e69]:
+                - generic [ref=f2e71]: "1"
+                - generic [ref=f2e73]: "4"
+                - generic [ref=f2e75]: "7"
+                - generic [ref=f2e77]: "10"
+              - generic [ref=f2e78]:
+                - generic [ref=f2e80]: $0k
+                - generic [ref=f2e82]: $5k
+                - generic [ref=f2e84]: $10k
+                - generic [ref=f2e86]: $15k
+                - generic [ref=f2e88]: $20k
+              - generic [ref=f2e89]: Break-even 5.2y
+        - article [ref=f2e90]:
+          - generic [ref=f2e91]:
+            - generic [ref=f2e92]:
+              - img [ref=f2e93]
+              - text: Charging optimizer
+            - heading "Infrastructure cost scenarios" [level=2] [ref=f2e95]
+          - paragraph [ref=f2e96]: Compares annual electricity cost for your 8,320 miles in Tesla Model 3 Long Range RWD across home, mixed, and public fast charging. The calculation uses this model's 15.2 kWh/100 km efficiency.
+          - application [ref=f2e100]:
+            - generic [ref=f2e108]:
+              - generic [ref=f2e109]:
+                - generic [ref=f2e111]: Home
+                - generic [ref=f2e113]: Mixed
+                - generic [ref=f2e115]: Public
+              - generic [ref=f2e116]:
+                - generic [ref=f2e118]: $0
+                - generic [ref=f2e120]: $85
+                - generic [ref=f2e122]: $170
+                - generic [ref=f2e124]: $255
+                - generic [ref=f2e126]: $340
+        - article [ref=f2e127]:
+          - generic [ref=f2e128]:
+            - generic [ref=f2e129]:
+              - img [ref=f2e130]
+              - text: Decarbonization
+            - heading "Environmental payback" [level=2] [ref=f2e133]
+          - paragraph [ref=f2e134]: Estimates cumulative life-cycle CO2 for a conventional vehicle versus Tesla Model 3 Long Range RWD, using your annual mileage, this EV's efficiency, and CA grid intensity. The EV line includes an upfront manufacturing emissions debt.
+          - application [ref=f2e138]:
+            - generic [ref=f2e162]:
+              - generic [ref=f2e163]:
+                - generic [ref=f2e165]: "1"
+                - generic [ref=f2e167]: "2"
+                - generic [ref=f2e169]: "3"
+                - generic [ref=f2e171]: "4"
+                - generic [ref=f2e173]: "5"
+                - generic [ref=f2e175]: "6"
+                - generic [ref=f2e177]: "7"
+                - generic [ref=f2e179]: "8"
+                - generic [ref=f2e181]: "9"
+                - generic [ref=f2e183]: "10"
+              - generic [ref=f2e184]:
+                - generic [ref=f2e186]: 0t
+                - generic [ref=f2e188]: 9t
+                - generic [ref=f2e190]: 18t
+                - generic [ref=f2e192]: 27t
+                - generic [ref=f2e194]: 36t
+          - paragraph [ref=f2e195]: "Grid intensity: 0.20 kg CO2/kWh. Carbon payback: 1.9 years."
+  - generic [ref=f2e196]: 0t

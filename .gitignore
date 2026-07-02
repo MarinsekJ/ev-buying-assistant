@@ -16,6 +16,7 @@ models/*
 reports/figures/*
 !reports/figures/.gitkeep
 *.html
+!app/frontend/index.html
 *.joblib
 *.zip
-
+*.err.log
